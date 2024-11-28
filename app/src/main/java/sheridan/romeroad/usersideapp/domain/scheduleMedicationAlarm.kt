@@ -5,8 +5,10 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import sheridan.romeroad.usersideapp.data.MedicationReminder
 import sheridan.romeroad.usersideapp.services.MedicationAlarmReceiver
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,14 +35,31 @@ fun scheduleMedicationAlarm(context: Context, reminder: MedicationReminder) {
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
-    val reminderTime = Calendar.getInstance().apply {
-        time = timeFormat.parse(reminder.time) ?: Date()
-    }
+    val reminderTime = parseMedicationTime(reminder.time)
 
-    alarmManager.setExact(
-        AlarmManager.RTC_WAKEUP,
-        reminderTime.timeInMillis,
-        pendingIntent
-    )
+    if (reminderTime != null) {
+        val calendar = Calendar.getInstance().apply {
+            time = reminderTime
+            if (before(Calendar.getInstance())) {
+                add(Calendar.DATE, 1) // Schedule for the next day if the time is in the past
+            }
+        }
+
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            pendingIntent
+        )
+    } else {
+        Log.e("ScheduleMedicationAlarm", "Failed to parse reminder time: ${reminder.time}")
+    }
+}
+fun parseMedicationTime(timeString: String): Date? {
+    return try {
+        val timeFormat = SimpleDateFormat("h:mma", Locale.getDefault()) // Matches "2:29PM"
+        timeFormat.parse(timeString)
+    } catch (e: ParseException) {
+        e.printStackTrace()
+        null
+    }
 }

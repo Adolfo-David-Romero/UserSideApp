@@ -38,7 +38,7 @@ import sheridan.romeroad.usersideapp.viewmodels.MedicationViewModel
 fun MedicationRemindersScreen(
     viewModel: MedicationViewModel,
     context: Context = LocalContext.current
-                              ) {
+) {
     val medications by viewModel.medications.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -52,23 +52,26 @@ fun MedicationRemindersScreen(
                 title = { Text("Medication Reminders") }
             )
         }
-    ) {
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(innerPadding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
                 text = "Upcoming Medications",
-                style = MaterialTheme.typography.labelLarge
+                style = MaterialTheme.typography.headlineSmall
             )
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(medications) { reminder ->
-                    MedicationReminderItem(reminder)
+            if (medications.isEmpty()) {
+                Text("No medication reminders available.", style = MaterialTheme.typography.bodyMedium)
+            } else {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(medications) { reminder ->
+                        MedicationReminderItem(reminder)
+                    }
                 }
             }
         }

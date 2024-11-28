@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -151,59 +153,57 @@ fun DrawerButton(text: String, onClick: () -> Unit) {
 
 @Composable
 fun HomeContent(navController: NavController, innerPadding: PaddingValues) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            "Your Health Dashboard",
-            style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold),
-            color = Color(0xFF6200EE),
-            modifier = Modifier.padding(top = 8.dp)
-        )
+        // Header or Title Section
+        item {
+            Text(
+                "Your Health Dashboard",
+                style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold),
+                color = Color(0xFF6200EE),
+                modifier = Modifier.padding(top = 8.dp)
+            )
 
-        Text(
-            "Access your health information and services",
-            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium),
-            color = Color.Gray
-        )
+            Text(
+                "Access your health information and services",
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium),
+                color = Color.Gray
+            )
+        }
 
-        HomeScreenButton(
-            text = "Patient Status",
-            onClick = { navController.navigate("patientStatus") }
-        )
+        // Buttons for Navigation
+        items(listOf("Patient Status", "Medication Reminders", "Video Feeds", "Messages")) { buttonText ->
+            HomeScreenButton(
+                text = buttonText,
+                onClick = {
+                    when (buttonText) {
+                        "Patient Status" -> navController.navigate("patientStatus")
+                        "Medication Reminders" -> navController.navigate("medications")
+                        "Video Feeds" -> navController.navigate("videos")
+                        "Messages" -> navController.navigate("messages")
+                    }
+                }
+            )
+        }
 
-        HomeScreenButton(
-            text = "Medication Reminders",
-            onClick = { navController.navigate("medications") }
-        )
-
-        HomeScreenButton(
-            text = "Video Feeds",
-            onClick = { navController.navigate("videos") }
-        )
-
-        HomeScreenButton(
-            text = "Messages",
-            onClick = { navController.navigate("messages") }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedButton(
-            onClick = {
-                Firebase.auth.signOut()
-                navController.navigate("login") { popUpTo("home") { inclusive = true } }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
-        ) {
-            Text("Logout", style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+        // Logout Button
+        item {
+            OutlinedButton(
+                onClick = {
+                    Firebase.auth.signOut()
+                    navController.navigate("login") { popUpTo("home") { inclusive = true } }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
+            ) {
+                Text("Logout", style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+            }
         }
     }
 }

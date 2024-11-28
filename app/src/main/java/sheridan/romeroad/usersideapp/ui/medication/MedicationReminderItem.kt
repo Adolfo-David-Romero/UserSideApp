@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,20 +24,22 @@ import sheridan.romeroad.usersideapp.data.MedicationReminder
 @Composable
 fun MedicationReminderItem(reminder: MedicationReminder) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                Text(text = reminder.name, style = MaterialTheme.typography.bodyMedium)
+                Text(text = reminder.name, style = MaterialTheme.typography.bodyLarge)
                 Text(text = "Time: ${reminder.time}", style = MaterialTheme.typography.bodyMedium)
                 Text(text = "Dosage: ${reminder.dosage}", style = MaterialTheme.typography.bodyMedium)
             }
-            Checkbox(checked = reminder.isTaken, onCheckedChange = null)
+            Checkbox(
+                checked = reminder.isTaken,
+                onCheckedChange = { /* Handle checkbox state */ }
+            )
         }
     }
 }

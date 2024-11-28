@@ -40,45 +40,90 @@ fun PatientStatusScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Patient Status") }
+                title = {
+                    Text(
+                        "Patient Status",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState()) // Enable vertical scrolling
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Header Section
+            item {
+                Text(
+                    "Patient Overview",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            // General Health Information
             patientStatus?.let { status ->
-                // Display patient general information
-                Text("Health Status: ${status.healthStatus}", style = MaterialTheme.typography.bodyLarge)
-                Text("Avg. Blood Oxygen: ${status.avgBloodOxygen}%", style = MaterialTheme.typography.bodyLarge)
-                Text("Avg. Heart Rate: ${status.avgHeartRate} BPM", style = MaterialTheme.typography.bodyLarge)
-                Text("Avg. Steps Per Day: ${status.avgStepsPerDay}", style = MaterialTheme.typography.bodyLarge)
-                Text("Emergency Contact: ${status.emergencyContact}", style = MaterialTheme.typography.bodyLarge)
-                Text("Nurse Notes: ${status.nurseNotes}", style = MaterialTheme.typography.bodyLarge)
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Display medications fetched by MedicationViewModel
-                Text("Medications:", style = MaterialTheme.typography.bodyLarge)
-                if (medications.isNotEmpty()) {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        elevation = CardDefaults.cardElevation(4.dp)
                     ) {
-                        items(medications) { medication ->
-                            MedicationReminderItem(medication)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text("Health Status: ${status.healthStatus}", style = MaterialTheme.typography.bodyLarge)
+                            Text("Avg. Blood Oxygen: ${status.avgBloodOxygen}%", style = MaterialTheme.typography.bodyLarge)
+                            Text("Avg. Heart Rate: ${status.avgHeartRate} BPM", style = MaterialTheme.typography.bodyLarge)
+                            Text("Avg. Steps Per Day: ${status.avgStepsPerDay}", style = MaterialTheme.typography.bodyLarge)
+                            Text("Emergency Contact: ${status.emergencyContact}", style = MaterialTheme.typography.bodyLarge)
+                            Text("Nurse Notes: ${status.nurseNotes}", style = MaterialTheme.typography.bodyLarge)
                         }
                     }
+                }
+
+                // Medications Section Header
+                item {
+                    Text(
+                        "Medications",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                // Medications List
+                if (medications.isNotEmpty()) {
+                    items(medications) { medication ->
+                        MedicationReminderItem(medication)
+                    }
                 } else {
-                    Text("No medications available.", style = MaterialTheme.typography.bodyMedium)
+                    item {
+                        Text(
+                            "No medications available.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             } ?: run {
-                Text("Loading patient status...", style = MaterialTheme.typography.bodyLarge)
+                item {
+                    Text(
+                        "Loading patient status...",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }

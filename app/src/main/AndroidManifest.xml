@@ -4,6 +4,11 @@
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
 
@@ -34,6 +39,11 @@
         <!-- Registering the BroadcastReceiver -->
         <receiver android:name=".services.MedicationAlarmReceiver"
             android:exported="false" />
+        <service android:name=".services.FallDetectionService" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCGP1r4R5gzEMNt9zBJOPGEd3WRcf1LnGo"/>
     </application>
 
 </manifest>

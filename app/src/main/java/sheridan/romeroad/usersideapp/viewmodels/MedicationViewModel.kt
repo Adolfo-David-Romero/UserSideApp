@@ -1,6 +1,7 @@
 package sheridan.romeroad.usersideapp.viewmodels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import sheridan.romeroad.usersideapp.data.MedicationReminder
 import sheridan.romeroad.usersideapp.domain.scheduleMedicationAlarm
+import java.util.Calendar
 
 /**
  * Student ID: 991555778
@@ -24,28 +26,26 @@ class MedicationViewModel : ViewModel() {
     val medications: StateFlow<List<MedicationReminder>> = _medications
 
     fun fetchMedications() {
-        viewModelScope.launch {
-            try {
-                db.collection("medications")
-                    .get()
-                    .addOnSuccessListener { result ->
-                        val fetchedMedications = result.documents.mapNotNull { document ->
-                            document.toObject(MedicationReminder::class.java)
-                        }
-                        _medications.value = fetchedMedications
-                    }
-                    .addOnFailureListener {
-                        _medications.value = emptyList()
-                    }
-            } catch (e: Exception) {
+        db.collection("medications")
+            .get()
+            .addOnSuccessListener { result ->
+                val fetchedMedications = result.documents.mapNotNull { document ->
+                    document.toObject(MedicationReminder::class.java)
+                }
+                _medications.value = fetchedMedications
+            }
+            .addOnFailureListener {
                 _medications.value = emptyList()
             }
-        }
     }
 
     fun scheduleAlarms(context: Context) {
         medications.value.forEach { reminder ->
-            scheduleMedicationAlarm(context, reminder)
+            try {
+                scheduleMedicationAlarm(context, reminder)
+            } catch (e: Exception) {
+                Log.e("MedicationViewModel", "Failed to schedule alarm for ${reminder.name}: ${e.message}")
+            }
         }
     }
 }

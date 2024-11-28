@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package sheridan.romeroad.usersideapp.ui.profile
 
 import androidx.compose.foundation.layout.Arrangement
@@ -5,12 +7,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,92 +42,132 @@ import sheridan.romeroad.usersideapp.viewmodels.ProfileViewModel
  * UserSideApp
  * created by davidromero
  **/
+//@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(viewModel: ProfileViewModel, userId: String, onBack: () -> Unit) {
+fun ProfileScreen(
+    viewModel: ProfileViewModel,
+    userId: String,
+    onBack: () -> Unit
+) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var successMessage by remember { mutableStateOf<String?>(null) }
 
+    // Fetch user profile on screen load
     LaunchedEffect(userId) {
-        // Fetch user profile when the screen is loaded
-        viewModel.fetchUserProfile(userId,
+        viewModel.fetchUserProfile(
+            userId = userId,
             onSuccess = { profile ->
                 name = profile.name
                 email = profile.email
                 phone = profile.phone
             },
-            onError = { errorMessage = it }
+            onError = { error -> errorMessage = error }
         )
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(
-            text = "Edit Profile",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
-            modifier = Modifier.fillMaxWidth(),
-            textStyle = TextStyle(fontSize = 18.sp)
-        )
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth(),
-            textStyle = TextStyle(fontSize = 18.sp)
-        )
-
-        OutlinedTextField(
-            value = phone,
-            onValueChange = { phone = it },
-            label = { Text("Phone Number") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            textStyle = TextStyle(fontSize = 18.sp)
-        )
-
-        Button(
-            onClick = {
-                val userProfile = UserProfile(name, email, phone)
-                viewModel.saveUserProfile(userId, userProfile,
-                    onSuccess = { successMessage = "Profile saved successfully!" },
-                    onError = { errorMessage = it }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Edit Profile") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Header Text
+            item {
+                Text(
+                    text = "Update your personal information",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.primary
                 )
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(Color.Green),
-        ) {
-            Text(text = "Save", color = Color.White, fontSize = 18.sp)
-        }
+            }
 
-        Button(
-            onClick = { onBack() },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(Color.Gray),
-        ) {
-            Text(text = "Back", color = Color.White, fontSize = 18.sp)
-        }
+            // Name Input Field
+            item {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name") },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyLarge
+                )
+            }
 
-        errorMessage?.let {
-            Text(text = it, color = Color.Red)
-        }
+            // Email Input Field
+            item {
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                )
+            }
 
-        successMessage?.let {
-            Text(text = it, color = Color.Green)
+            // Phone Input Field
+            item {
+                OutlinedTextField(
+                    value = phone,
+                    onValueChange = { phone = it },
+                    label = { Text("Phone Number") },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                )
+            }
+
+            // Save Button
+            item {
+                Button(
+                    onClick = {
+                        val userProfile = UserProfile(name, email, phone)
+                        viewModel.saveUserProfile(
+                            userId = userId,
+                            userProfile = userProfile,
+                            onSuccess = { successMessage = "Profile saved successfully!" },
+                            onError = { error -> errorMessage = error }
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text("Save", color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.bodyLarge)
+                }
+            }
+
+            // Error and Success Messages
+            item {
+                if (!errorMessage.isNullOrEmpty()) {
+                    Text(
+                        text = errorMessage!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                if (!successMessage.isNullOrEmpty()) {
+                    Text(
+                        text = successMessage!!,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
         }
     }
 }

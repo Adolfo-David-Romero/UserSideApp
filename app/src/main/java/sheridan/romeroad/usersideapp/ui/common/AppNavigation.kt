@@ -1,6 +1,8 @@
 package sheridan.romeroad.usersideapp.ui.common
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -8,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.ktx.*
 import com.google.firebase.ktx.Firebase
+import sheridan.romeroad.usersideapp.services.FallDetectionService
 import sheridan.romeroad.usersideapp.ui.auth.LoginScreen
 import sheridan.romeroad.usersideapp.ui.auth.RegisterScreen
 import sheridan.romeroad.usersideapp.ui.home.HomeScreen
@@ -16,6 +19,7 @@ import sheridan.romeroad.usersideapp.ui.messages.MessagesScreen
 import sheridan.romeroad.usersideapp.ui.profile.ProfileScreen
 import sheridan.romeroad.usersideapp.ui.status.PatientStatusScreen
 import sheridan.romeroad.usersideapp.ui.video.VideoFeedsScreen
+//import sheridan.romeroad.usersideapp.ui.video.VideoFeedsScreen
 import sheridan.romeroad.usersideapp.viewmodels.MedicationViewModel
 import sheridan.romeroad.usersideapp.viewmodels.PatientStatusViewModel
 import sheridan.romeroad.usersideapp.viewmodels.ProfileViewModel
@@ -35,6 +39,11 @@ fun AppNavigation() {
     val userId = Firebase.auth.currentUser?.uid
     val context = LocalContext.current
 
+    // Start the fall detection service
+    LaunchedEffect(Unit) {
+        val intent = Intent(context, FallDetectionService::class.java)
+        context.startService(intent)
+    }
     NavHost(navController = navController, startDestination = if (isLoggedIn) "home" else "login") {
         composable("login") {
             LoginScreen(
@@ -55,6 +64,9 @@ fun AppNavigation() {
             viewModel = medicationViewModel,
             context = context
         ) }
+
+        composable("videos") {
+            VideoFeedsScreen() }
         composable("register") {
             RegisterScreen(
                 onRegistrationSuccess = { navController.navigate("login") { popUpTo("register") { inclusive = true } } },
