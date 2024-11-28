@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +24,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import sheridan.romeroad.usersideapp.data.UserProfile
+import sheridan.romeroad.usersideapp.viewmodels.ProfileViewModel
 
 /**
  * Student ID: 991555778
@@ -30,10 +33,24 @@ import androidx.compose.ui.unit.sp
  * created by davidromero
  **/
 @Composable
-fun ProfileScreen(onSaveProfile: (String, String, String) -> Unit, onBack: () -> Unit) {
+fun ProfileScreen(viewModel: ProfileViewModel, userId: String, onBack: () -> Unit) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var successMessage by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(userId) {
+        // Fetch user profile when the screen is loaded
+        viewModel.fetchUserProfile(userId,
+            onSuccess = { profile ->
+                name = profile.name
+                email = profile.email
+                phone = profile.phone
+            },
+            onError = { errorMessage = it }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -74,7 +91,13 @@ fun ProfileScreen(onSaveProfile: (String, String, String) -> Unit, onBack: () ->
         )
 
         Button(
-            onClick = { onSaveProfile(name, email, phone) },
+            onClick = {
+                val userProfile = UserProfile(name, email, phone)
+                viewModel.saveUserProfile(userId, userProfile,
+                    onSuccess = { successMessage = "Profile saved successfully!" },
+                    onError = { errorMessage = it }
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(Color.Green),
         ) {
@@ -87,6 +110,14 @@ fun ProfileScreen(onSaveProfile: (String, String, String) -> Unit, onBack: () ->
             colors = ButtonDefaults.buttonColors(Color.Gray),
         ) {
             Text(text = "Back", color = Color.White, fontSize = 18.sp)
+        }
+
+        errorMessage?.let {
+            Text(text = it, color = Color.Red)
+        }
+
+        successMessage?.let {
+            Text(text = it, color = Color.Green)
         }
     }
 }

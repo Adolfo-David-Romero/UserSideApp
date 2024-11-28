@@ -1,14 +1,20 @@
 package sheridan.romeroad.usersideapp.ui.common
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.ktx.*
+import com.google.firebase.ktx.Firebase
+import sheridan.romeroad.usersideapp.ui.auth.LoginScreen
+import sheridan.romeroad.usersideapp.ui.auth.RegisterScreen
 import sheridan.romeroad.usersideapp.ui.home.HomeScreen
 import sheridan.romeroad.usersideapp.ui.medication.MedicationRemindersScreen
 import sheridan.romeroad.usersideapp.ui.messages.MessagesScreen
 import sheridan.romeroad.usersideapp.ui.profile.ProfileScreen
 import sheridan.romeroad.usersideapp.ui.video.VideoFeedsScreen
+import sheridan.romeroad.usersideapp.viewmodels.ProfileViewModel
 
 /**
  * Student ID: 991555778
@@ -18,14 +24,34 @@ import sheridan.romeroad.usersideapp.ui.video.VideoFeedsScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "home") {
+    val isLoggedIn = Firebase.auth.currentUser != null
+    val profileViewModel: ProfileViewModel = viewModel()
+    val userId = Firebase.auth.currentUser?.uid
+
+    NavHost(navController = navController, startDestination = if (isLoggedIn) "home" else "login") {
+        composable("login") {
+            LoginScreen(
+                onLoginSuccess = { navController.navigate("home") { popUpTo("login") { inclusive = true } } },
+                onNavigateToRegister = { navController.navigate("register") }
+            )
+        }
+        composable("register") {
+            RegisterScreen(
+                onRegistrationSuccess = { navController.navigate("login") { popUpTo("register") { inclusive = true } } },
+                onBack = { navController.popBackStack() }
+            )
+        }
         composable("home") { HomeScreen(navController) }
-        composable("profile") { ProfileScreen(
-            onSaveProfile = TODO(),
-            onBack = { navController.popBackStack() }
-        ) }
-        composable("medications") { MedicationRemindersScreen() }
-        composable("videos") { VideoFeedsScreen() }
-        composable("messages") { MessagesScreen() }
+        composable("profile") {
+
+            if (userId != null) {
+                ProfileScreen(
+                    viewModel = profileViewModel,
+                    userId = userId,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+        }
+        // Add other routes as needed
     }
 }

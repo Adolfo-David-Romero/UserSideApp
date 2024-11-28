@@ -12,6 +12,10 @@ navigationCompose = "2.8.4"
 comGoogleGmsGoogleServicesGradlePlugin = "4.4.2"
 firebaseBom = "33.6.0"
 firebaseAnalytics = "22.1.2"
+firebaseAuthKtx = "23.1.0"
+storage = "1.5.0"
+google = "4.4.2"
+firebaseFirestoreKtx = "25.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,9 +36,13 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 com-google-gms-google-services-gradle-plugin = { group = "com.google.gms.google-services", name = "com.google.gms.google-services.gradle.plugin", version.ref = "comGoogleGmsGoogleServicesGradlePlugin" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+androidx-storage = { group = "androidx.test.services", name = "storage", version.ref = "storage" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 
 [plugins]
+
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+google-servicees = { id = "com.google.gms.google-services", version.ref = "google" }

@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.firebase.FirebaseApp
 import sheridan.romeroad.usersideapp.ui.common.AppNavigation
 import sheridan.romeroad.usersideapp.ui.theme.UserSideAppTheme
 
@@ -18,6 +19,10 @@ import sheridan.romeroad.usersideapp.ui.theme.UserSideAppTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize Firebase
+        FirebaseApp.initializeApp(this)
+
         enableEdgeToEdge()
         setContent {
             UserSideAppTheme {

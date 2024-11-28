@@ -18,6 +18,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 /**
  * Student ID: 991555778
@@ -82,6 +84,17 @@ fun HomeScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Help & Support")
+            }
+
+            /*Sign-out button*/
+            Button(
+                onClick = {
+                    Firebase.auth.signOut()
+                    navController.navigate("login") { popUpTo("home") { inclusive = true } }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Logout")
             }
         }
     }
