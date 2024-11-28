@@ -1,6 +1,7 @@
 package sheridan.romeroad.usersideapp.ui.medication
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,8 +18,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import sheridan.romeroad.usersideapp.viewmodels.MedicationViewModel
 
 /**
  * Student ID: 991555778
@@ -29,12 +35,21 @@ import androidx.compose.ui.unit.dp
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MedicationRemindersScreen() {
+fun MedicationRemindersScreen(
+    viewModel: MedicationViewModel,
+    context: Context = LocalContext.current
+                              ) {
+    val medications by viewModel.medications.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchMedications()
+        viewModel.scheduleAlarms(context)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Medication Reminders") },
-                //backgroundColor = MaterialTheme.colors.primary
+                title = { Text("Medication Reminders") }
             )
         }
     ) {
@@ -52,46 +67,10 @@ fun MedicationRemindersScreen() {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(getMedicationReminders()) { reminder ->
+                items(medications) { reminder ->
                     MedicationReminderItem(reminder)
                 }
             }
         }
     }
 }
-
-@Composable
-fun MedicationReminderItem(reminder: MedicationReminder) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text(text = reminder.name, style = MaterialTheme.typography.bodyMedium)
-                Text(text = "Time: ${reminder.time}", style = MaterialTheme.typography.bodyMedium)
-                Text(text = "Dosage: ${reminder.dosage}", style = MaterialTheme.typography.bodyMedium)
-            }
-            Checkbox(checked = reminder.isTaken, onCheckedChange = null)
-        }
-    }
-}
-
-// Mock data
-data class MedicationReminder(
-    val name: String,
-    val time: String,
-    val dosage: String,
-    val isTaken: Boolean
-)
-
-fun getMedicationReminders() = listOf(
-    MedicationReminder("Aspirin", "8:00 AM", "100 mg", false),
-    MedicationReminder("Vitamin D", "1:00 PM", "200 IU", true),
-    MedicationReminder("Antibiotics", "6:00 PM", "500 mg", false)
-)
