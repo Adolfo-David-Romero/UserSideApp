@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -17,6 +18,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -37,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -53,6 +56,8 @@ dependencies {
     implementation(libs.android.maps.compose)
 
 
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.generativeai)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -77,6 +82,12 @@ dependencies {
     //implementation(libs.extension.rtsp)
     implementation(libs.exoplayer)
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.generativeai)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.common)
+    implementation(libs.androidx.compose.material)
+    //implementation(libs.play.services.gemini)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

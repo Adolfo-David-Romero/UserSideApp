@@ -8,11 +8,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.ai.client.generativeai.GenerativeModel
 import com.google.firebase.auth.ktx.*
 import com.google.firebase.ktx.Firebase
 import sheridan.romeroad.usersideapp.services.FallDetectionService
 import sheridan.romeroad.usersideapp.ui.auth.LoginScreen
 import sheridan.romeroad.usersideapp.ui.auth.RegisterScreen
+//import sheridan.romeroad.usersideapp.ui.gemini.GeminiPromptScreen
+import sheridan.romeroad.usersideapp.ui.gemini.GeminiScreen
+import sheridan.romeroad.usersideapp.ui.gemini.GeminiViewModel
+//import sheridan.romeroad.usersideapp.ui.gemini.TextGeminiViewModel
+//import sheridan.romeroad.usersideapp.ui.gemini.UserPromptScreen
 import sheridan.romeroad.usersideapp.ui.home.HomeScreen
 import sheridan.romeroad.usersideapp.ui.medication.MedicationRemindersScreen
 import sheridan.romeroad.usersideapp.ui.messages.MessagesScreen
@@ -36,6 +42,12 @@ fun AppNavigation() {
     val profileViewModel: ProfileViewModel = viewModel()
     val medicationViewModel: MedicationViewModel = viewModel()
     val patientStatusViewModel: PatientStatusViewModel = viewModel()
+    val geminiViewModel = GeminiViewModel(
+        generativeModel = GenerativeModel(
+            modelName = "gemini-1.5-pro",
+            apiKey = "AIzaSyB9UAjlNvIXjmpXI5Qld25O_D9E2j3kQL0"
+        )
+    )
     val userId = Firebase.auth.currentUser?.uid
     val context = LocalContext.current
 
@@ -64,6 +76,12 @@ fun AppNavigation() {
             viewModel = medicationViewModel,
             context = context
         ) }
+        composable("gemini") {
+            /*UserPromptScreen(
+                geminiViewModel = geminiViewModel
+            )*/
+            GeminiScreen(viewModel = geminiViewModel)
+        }
 
         composable("videos") {
             VideoFeedsScreen() }

@@ -8,6 +8,7 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.2"
 composeBom = "2024.04.01"
+lifecycleViewmodelCompose = "2.8.7"
 media3Exoplayer = "1.4.1"
 media3CommonKtx = "1.4.1"
 navigationRuntimeKtx = "2.8.2"
@@ -22,6 +23,7 @@ firebaseBom = "33.4.0"
 firebaseDatabase = "21.0.0"
 firebaseFirestoreKtx = "25.1.0"
 firebaseMessagingKtx = "24.0.2"
+secretsGradlePlugin = "2.0.1"
 workRuntimeKtx = "2.9.1"
 media3ExoplayerRtsp = "1.0.0"
 media3ExoplayerVersion = "1.0.0"
@@ -32,8 +34,16 @@ media = "1.0.0"
 extensionRtsp = "1.4.1"
 exoplayer = "2.18.0"
 firebaseAuthKtx = "23.1.0"
+generativeai = "0.9.0"
+kotlinxCoroutinesAndroid = "1.9.0"
+firebaseCrashlyticsBuildtools = "3.0.2"
+#playServicesGemini = "2024110800"
+googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
+common = "0.10.0"
+composeMaterial = "1.4.0"
 
 [libraries]
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3Exoplayer" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -69,9 +79,18 @@ androidx-media = { group = "androidx.media", name = "media", version.ref = "medi
 #extension-rtsp = { group = "com.google.android.exoplayer", name = "extension-rtsp", version.ref = "extensionRtsp" }
 exoplayer = { group = "com.google.android.exoplayer", name = "exoplayer", version.ref = "exoplayer" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+#generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+#play-services-gemini = { group = "com.google.android.gms", name = "play-services-gemini", version.ref = "playServicesGemini" }
+generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
+common = { group = "com.google.ai.client.generativeai", name = "common", version.ref = "common" }
+secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
+androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 [plugins]
 
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = {id = "com.google.gms.google-services", version.ref = "google-service-plugin-v"}
+#google-android-libraries-mapsplatform-secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleAndroidLibrariesMapsplatformSecretsGradlePlugin" }

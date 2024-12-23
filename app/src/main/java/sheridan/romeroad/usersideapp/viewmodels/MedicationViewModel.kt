@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -25,17 +26,24 @@ class MedicationViewModel : ViewModel() {
     private val _medications = MutableStateFlow<List<MedicationReminder>>(emptyList())
     val medications: StateFlow<List<MedicationReminder>> = _medications
 
+    private var listenerRegistration: ListenerRegistration? = null
+
     fun fetchMedications() {
-        db.collection("medications")
-            .get()
-            .addOnSuccessListener { result ->
-                val fetchedMedications = result.documents.mapNotNull { document ->
-                    document.toObject(MedicationReminder::class.java)
+        // Listen for real-time updates
+        listenerRegistration?.remove() // Remove any previous listener to avoid duplication
+        listenerRegistration = db.collection("medications")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("MedicationViewModel", "Error fetching medications: ${error.message}")
+                    _medications.value = emptyList()
+                    return@addSnapshotListener
                 }
-                _medications.value = fetchedMedications
-            }
-            .addOnFailureListener {
-                _medications.value = emptyList()
+                if (snapshot != null) {
+                    val fetchedMedications = snapshot.documents.mapNotNull { document ->
+                        document.toObject(MedicationReminder::class.java)
+                    }
+                    _medications.value = fetchedMedications
+                }
             }
     }
 
@@ -47,5 +55,10 @@ class MedicationViewModel : ViewModel() {
                 Log.e("MedicationViewModel", "Failed to schedule alarm for ${reminder.name}: ${e.message}")
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        listenerRegistration?.remove() // Clean up Firestore listener
     }
 }
