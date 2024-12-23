@@ -1,21 +1,14 @@
-package sheridan.romeroad.usersideapp.ui.gemini
+package sheridan.romeroad.usersideapp.viewmodels
 
-import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.ai.client.generativeai.BuildConfig
 //import com.google.ai.client.generativeai.BuildConfig
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import sheridan.romeroad.usersideapp.ui.gemini.UiState
 
 /**
  * Student ID: 991555778
@@ -24,7 +17,10 @@ import kotlinx.coroutines.launch
  * on 2024-12-20
  * "AIzaSyB9UAjlNvIXjmpXI5Qld25O_D9E2j3kQL0"
  **/
-class GeminiViewModel(private val generativeModel: GenerativeModel) : ViewModel() {
+class GeminiViewModel(
+    private val generativeModel: GenerativeModel,
+    private val medicationViewModel: MedicationViewModel,
+) : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
 
@@ -38,7 +34,19 @@ class GeminiViewModel(private val generativeModel: GenerativeModel) : ViewModel(
         _uiState.value = _uiState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
             try {
-                val prompt = content { text(_uiState.value.userInput) }
+                val medicationContext = medicationViewModel.formatMedicationsForGemini()
+                val prompt = content {
+                    text("""
+                    You are a virtual assistant specialized in helping older adults and/or patients.
+                    Provide clear, empathetic, and easy-to-understand responses without using technical jargon. 
+                    I will provide you the patient/user context, which will give you the background you need to understand their medical history, vitals, and any other relevant info. Use this information when relevant.
+                    I will also provide you the user input directly from the user at the end.
+                    
+                    Patient/User Context: Medication Context: $medicationContext. 
+                    
+                    User input: "${_uiState.value.userInput}"
+                """.trimIndent())
+                }
                 val response = generativeModel.generateContent(prompt)
                 _uiState.value = _uiState.value.copy(response = response.text, isLoading = false)
             } catch (e: Exception) {

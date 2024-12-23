@@ -6,28 +6,15 @@ package sheridan.romeroad.usersideapp.ui.gemini
  * created by davidromero
  * on 2024-12-11
  **/
-import android.app.VoiceInteractor
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.wear.compose.material.Colors
-import com.google.ai.client.generativeai.BuildConfig
-import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.GenerateContentResponse
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.ResponseHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import sheridan.romeroad.usersideapp.viewmodels.GeminiViewModel
 
 @Composable
 fun GeminiScreen(viewModel: GeminiViewModel = viewModel()) {
@@ -39,31 +26,48 @@ fun GeminiScreen(viewModel: GeminiViewModel = viewModel()) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Input field with larger font and voice input
         OutlinedTextField(
             value = uiState.userInput,
             onValueChange = viewModel::onInputChange,
-            label = { Text("Enter your input") },
+            label = { Text("Chat with your AI Medical Assistant", style = MaterialTheme.typography.headlineSmall) },
+            textStyle = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Button to send request with descriptive text
         Button(
             onClick = { viewModel.sendRequest() },
             modifier = Modifier.fillMaxWidth(),
             enabled = !uiState.isLoading
         ) {
-            Text(if (uiState.isLoading) "Loading..." else "Send")
+            Text(
+                text = if (uiState.isLoading) "Processing..." else "Get Assistance",
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Display the response with larger, readable text
         uiState.response?.let {
-            Text("Response: $it", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                "Assistant's Response: $it",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(8.dp)
+            )
         }
 
+        // Error handling with clear visibility
         uiState.error?.let {
-            Text("Error: $it", color = Color.Red)
+            Text(
+                "Error: $it",
+                color = Color.Red,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }

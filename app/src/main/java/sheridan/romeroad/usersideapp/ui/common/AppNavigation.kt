@@ -16,12 +16,11 @@ import sheridan.romeroad.usersideapp.ui.auth.LoginScreen
 import sheridan.romeroad.usersideapp.ui.auth.RegisterScreen
 //import sheridan.romeroad.usersideapp.ui.gemini.GeminiPromptScreen
 import sheridan.romeroad.usersideapp.ui.gemini.GeminiScreen
-import sheridan.romeroad.usersideapp.ui.gemini.GeminiViewModel
+import sheridan.romeroad.usersideapp.viewmodels.GeminiViewModel
 //import sheridan.romeroad.usersideapp.ui.gemini.TextGeminiViewModel
 //import sheridan.romeroad.usersideapp.ui.gemini.UserPromptScreen
 import sheridan.romeroad.usersideapp.ui.home.HomeScreen
 import sheridan.romeroad.usersideapp.ui.medication.MedicationRemindersScreen
-import sheridan.romeroad.usersideapp.ui.messages.MessagesScreen
 import sheridan.romeroad.usersideapp.ui.profile.ProfileScreen
 import sheridan.romeroad.usersideapp.ui.status.PatientStatusScreen
 import sheridan.romeroad.usersideapp.ui.video.VideoFeedsScreen
@@ -46,7 +45,8 @@ fun AppNavigation() {
         generativeModel = GenerativeModel(
             modelName = "gemini-1.5-pro",
             apiKey = "AIzaSyB9UAjlNvIXjmpXI5Qld25O_D9E2j3kQL0"
-        )
+        ),
+        medicationViewModel = medicationViewModel
     )
     val userId = Firebase.auth.currentUser?.uid
     val context = LocalContext.current

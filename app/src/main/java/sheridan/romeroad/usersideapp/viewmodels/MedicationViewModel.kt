@@ -29,8 +29,7 @@ class MedicationViewModel : ViewModel() {
     private var listenerRegistration: ListenerRegistration? = null
 
     fun fetchMedications() {
-        // Listen for real-time updates
-        listenerRegistration?.remove() // Remove any previous listener to avoid duplication
+        listenerRegistration?.remove() // Remove previous listener
         listenerRegistration = db.collection("medications")
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -54,6 +53,11 @@ class MedicationViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("MedicationViewModel", "Failed to schedule alarm for ${reminder.name}: ${e.message}")
             }
+        }
+    }
+    fun formatMedicationsForGemini(): String {
+        return medications.value.joinToString("\n") { reminder ->
+            "Name: ${reminder.name}, Time: ${reminder.time}, Dosage: ${reminder.dosage}, Taken: ${if (reminder.isTaken) "Yes" else "No"}"
         }
     }
 
