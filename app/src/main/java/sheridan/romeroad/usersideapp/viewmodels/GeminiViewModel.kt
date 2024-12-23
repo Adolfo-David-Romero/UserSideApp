@@ -25,6 +25,7 @@ class GeminiViewModel(
     private val generativeModel: GenerativeModel,
     private val medicationViewModel: MedicationViewModel,
     private val profileViewModel: ProfileViewModel,
+    private val patientStatusViewModel: PatientStatusViewModel
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
@@ -40,12 +41,14 @@ class GeminiViewModel(
         viewModelScope.launch {
             try {
                 val medicationContext = medicationViewModel.formatMedicationsForGemini()
+                val patientStatusContext = patientStatusViewModel.patientStatus.value
                 val userContext = suspendCancellableCoroutine<String> { continuation ->
                     profileViewModel.formatUserProfileForGemini(
                         userId = FirebaseAuth.getInstance().currentUser!!.uid,
                         onSuccess = { continuation.resume(it) },
                         onError = { continuation.resumeWithException(Exception(it)) }
                     )
+
                 }
                 val prompt = content {
                     text("""
@@ -54,7 +57,7 @@ class GeminiViewModel(
                     I will provide you the patient/user context, which will give you the background you need to understand their medical history, vitals, and any other relevant info. Use this information when relevant.
                     I will also provide you the user input directly from the user at the end.
                     
-                    Patient Information: User Context: $userContext. Medication Context: $medicationContext. 
+                    Patient Information: User Context: $userContext. User Status Context: $patientStatusContext. Medication Context: $medicationContext. 
                     
                     User input: "${_uiState.value.userInput}"
                 """.trimIndent())

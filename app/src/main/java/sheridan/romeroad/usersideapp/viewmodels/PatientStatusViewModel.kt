@@ -27,23 +27,30 @@ class PatientStatusViewModel : ViewModel() {
     fun fetchPatientStatus(patientId: String) {
         viewModelScope.launch {
             try {
-                //TODO: Replace with medication viewmodel
-                // Fetch Medications
+                // Fetch Patient Info
+                val patientDoc = db.collection("patients").document(patientId).get().await()
+                val healthStatus = patientDoc.getString("healthStatus") ?: "Unknown"
+                val avgBloodOxygen = patientDoc.getLong("avgBloodOxygen")?.toInt() ?: 0
+                val avgHeartRate = patientDoc.getLong("avgHeartRate")?.toInt() ?: 0
+                val avgStepsPerDay = patientDoc.getLong("avgStepsPerDay")?.toInt() ?: 0
+                val emergencyContact = patientDoc.getString("emergencyContact") ?: "No contact info"
+                val nurseNotes = patientDoc.getString("nurseNotes") ?: "No notes"
+
                 val medications = db.collection("medications")
                     .whereEqualTo("patientId", patientId)
                     .get()
                     .await()
                     .documents.mapNotNull { it.toObject(MedicationReminder::class.java) }
 
-                // Populate the patient status
+                // Populate PatientStatus object
                 val fetchedStatus = PatientStatus(
-                    healthStatus = "Diabetes", // Placeholder
+                    healthStatus = healthStatus,
                     medications = medications,
-                    avgBloodOxygen = 98, // Placeholder
-                    avgHeartRate = 72, // Placeholder
-                    avgStepsPerDay = 5000, // Placeholder
-                    emergencyContact = "John Doe: +1234567890", // Placeholder
-                    nurseNotes = "Patient is recovering well." // Placeholder
+                    avgBloodOxygen = avgBloodOxygen,
+                    avgHeartRate = avgHeartRate,
+                    avgStepsPerDay = avgStepsPerDay,
+                    emergencyContact = emergencyContact,
+                    nurseNotes = nurseNotes
                 )
 
                 _patientStatus.value = fetchedStatus

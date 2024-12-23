@@ -47,7 +47,8 @@ fun AppNavigation() {
             apiKey = "AIzaSyB9UAjlNvIXjmpXI5Qld25O_D9E2j3kQL0"
         ),
         medicationViewModel = medicationViewModel,
-        profileViewModel = profileViewModel
+        profileViewModel = profileViewModel,
+        patientStatusViewModel = patientStatusViewModel
     )
     val userId = Firebase.auth.currentUser?.uid
     val context = LocalContext.current
