@@ -52,6 +52,8 @@ fun ProfileScreen(
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
+    var gender by remember { mutableStateOf("") }
+    var age by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var successMessage by remember { mutableStateOf<String?>(null) }
 
@@ -63,6 +65,8 @@ fun ProfileScreen(
                 name = profile.name
                 email = profile.email
                 phone = profile.phone
+                gender = profile.gender
+                age = if (profile.age > 0) profile.age.toString() else ""
             },
             onError = { error -> errorMessage = error }
         )
@@ -87,7 +91,6 @@ fun ProfileScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Header Text
             item {
                 Text(
                     text = "Update your personal information",
@@ -96,7 +99,7 @@ fun ProfileScreen(
                 )
             }
 
-            // Name Input Field
+            // Name Input
             item {
                 OutlinedTextField(
                     value = name,
@@ -107,7 +110,7 @@ fun ProfileScreen(
                 )
             }
 
-            // Email Input Field
+            // Email Input
             item {
                 OutlinedTextField(
                     value = email,
@@ -119,7 +122,7 @@ fun ProfileScreen(
                 )
             }
 
-            // Phone Input Field
+            // Phone Input
             item {
                 OutlinedTextField(
                     value = phone,
@@ -131,11 +134,40 @@ fun ProfileScreen(
                 )
             }
 
+            // Gender Input
+            item {
+                OutlinedTextField(
+                    value = gender,
+                    onValueChange = { gender = it },
+                    label = { Text("Gender") },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyLarge
+                )
+            }
+
+            // Age Input
+            item {
+                OutlinedTextField(
+                    value = age,
+                    onValueChange = { age = it },
+                    label = { Text("Age") },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+            }
+
             // Save Button
             item {
                 Button(
                     onClick = {
-                        val userProfile = UserProfile(name, email, phone)
+                        val userProfile = UserProfile(
+                            name = name,
+                            email = email,
+                            phone = phone,
+                            gender = gender,
+                            age = age.toIntOrNull() ?: 0
+                        )
                         viewModel.saveUserProfile(
                             userId = userId,
                             userProfile = userProfile,

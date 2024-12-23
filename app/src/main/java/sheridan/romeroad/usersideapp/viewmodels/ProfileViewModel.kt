@@ -42,6 +42,21 @@ class ProfileViewModel : ViewModel() {
             }
         }
     }
+    fun formatUserProfileForGemini(userId: String, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
+        fetchUserProfile(
+            userId = userId,
+            onSuccess = { profile ->
+                val formattedProfile = """
+                Name: ${profile.name}
+                Gender: ${profile.gender}
+                Age: ${profile.age}
+            """.trimIndent()
+                onSuccess(formattedProfile)
+            },
+            onError = onError
+        )
+    }
+
 
     // Function to fetch user profile
     fun fetchUserProfile(userId: String, onSuccess: (UserProfile) -> Unit, onError: (String) -> Unit) {

@@ -46,7 +46,8 @@ fun AppNavigation() {
             modelName = "gemini-1.5-pro",
             apiKey = "AIzaSyB9UAjlNvIXjmpXI5Qld25O_D9E2j3kQL0"
         ),
-        medicationViewModel = medicationViewModel
+        medicationViewModel = medicationViewModel,
+        profileViewModel = profileViewModel
     )
     val userId = Firebase.auth.currentUser?.uid
     val context = LocalContext.current

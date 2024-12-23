@@ -5,10 +5,14 @@ import androidx.lifecycle.viewModelScope
 //import com.google.ai.client.generativeai.BuildConfig
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import sheridan.romeroad.usersideapp.ui.gemini.UiState
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 /**
  * Student ID: 991555778
@@ -20,6 +24,7 @@ import sheridan.romeroad.usersideapp.ui.gemini.UiState
 class GeminiViewModel(
     private val generativeModel: GenerativeModel,
     private val medicationViewModel: MedicationViewModel,
+    private val profileViewModel: ProfileViewModel,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
@@ -35,6 +40,13 @@ class GeminiViewModel(
         viewModelScope.launch {
             try {
                 val medicationContext = medicationViewModel.formatMedicationsForGemini()
+                val userContext = suspendCancellableCoroutine<String> { continuation ->
+                    profileViewModel.formatUserProfileForGemini(
+                        userId = FirebaseAuth.getInstance().currentUser!!.uid,
+                        onSuccess = { continuation.resume(it) },
+                        onError = { continuation.resumeWithException(Exception(it)) }
+                    )
+                }
                 val prompt = content {
                     text("""
                     You are a virtual assistant specialized in helping older adults and/or patients.
@@ -42,7 +54,7 @@ class GeminiViewModel(
                     I will provide you the patient/user context, which will give you the background you need to understand their medical history, vitals, and any other relevant info. Use this information when relevant.
                     I will also provide you the user input directly from the user at the end.
                     
-                    Patient/User Context: Medication Context: $medicationContext. 
+                    Patient Information: User Context: $userContext. Medication Context: $medicationContext. 
                     
                     User input: "${_uiState.value.userInput}"
                 """.trimIndent())
