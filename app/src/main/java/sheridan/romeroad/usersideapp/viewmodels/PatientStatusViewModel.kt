@@ -45,7 +45,7 @@ class PatientStatusViewModel : ViewModel() {
                 // Populate PatientStatus object
                 val fetchedStatus = PatientStatus(
                     healthStatus = healthStatus,
-                    medications = medications,
+                    //medications = medications,
                     avgBloodOxygen = avgBloodOxygen,
                     avgHeartRate = avgHeartRate,
                     avgStepsPerDay = avgStepsPerDay,

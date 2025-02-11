@@ -41,6 +41,11 @@ firebaseCrashlyticsBuildtools = "3.0.2"
 googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 common = "0.10.0"
 composeMaterial = "1.4.0"
+datastorePreferences = "1.1.0"
+firebaseStorageKtx = "21.0.1"
+coilCompose = "3.0.4"
+coilNetworkOkhttp = "3.0.4"
+mapsUtilsKtx = "5.1.1"
 
 [libraries]
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
@@ -87,6 +92,11 @@ generativeai = { group = "com.google.ai.client.generativeai", name = "generative
 common = { group = "com.google.ai.client.generativeai", name = "common", version.ref = "common" }
 secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilCompose" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
+maps-utils-ktx = { group = "com.google.maps.android", name = "maps-utils-ktx", version.ref = "mapsUtilsKtx" }
 [plugins]
 
 android-application = { id = "com.android.application", version.ref = "agp" }

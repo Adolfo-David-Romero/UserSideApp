@@ -22,8 +22,8 @@ import java.util.Calendar
 
 
 class MedicationViewModel : ViewModel() {
-    private val db = FirebaseFirestore.getInstance()
-    private val _medications = MutableStateFlow<List<MedicationReminder>>(emptyList())
+    val db = FirebaseFirestore.getInstance()
+    val _medications = MutableStateFlow<List<MedicationReminder>>(emptyList())
     val medications: StateFlow<List<MedicationReminder>> = _medications
 
     private var listenerRegistration: ListenerRegistration? = null

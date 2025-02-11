@@ -8,7 +8,7 @@ package sheridan.romeroad.usersideapp.data
  **/
 data class PatientStatus(
     val healthStatus: String = "", // e.g., "Diabetes"
-    val medications: List<MedicationReminder> = emptyList(),
+    //val medications: List<MedicationReminder> = emptyList(),
     val avgBloodOxygen: Int = 0, // Percentage
     val avgHeartRate: Int = 0, // Beats per minute
     val avgStepsPerDay: Int = 0,

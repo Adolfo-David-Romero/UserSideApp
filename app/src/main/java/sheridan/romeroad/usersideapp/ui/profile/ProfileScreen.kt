@@ -2,15 +2,25 @@
 
 package sheridan.romeroad.usersideapp.ui.profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,13 +37,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import sheridan.romeroad.usersideapp.data.UserProfile
 import sheridan.romeroad.usersideapp.viewmodels.ProfileViewModel
 
@@ -54,8 +68,20 @@ fun ProfileScreen(
     var phone by remember { mutableStateOf("") }
     var gender by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
+    var profileImageUrl by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var successMessage by remember { mutableStateOf<String?>(null) }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            imageUri = it
+            viewModel.uploadProfileImage(userId, it, onSuccess = { imageUrl ->
+                profileImageUrl = imageUrl
+                viewModel.updateProfileImage(userId, imageUrl, {}, {})
+            }, onError = { errorMessage = it })
+        }
+    }
 
     // Fetch user profile on screen load
     LaunchedEffect(userId) {
@@ -67,6 +93,7 @@ fun ProfileScreen(
                 phone = profile.phone
                 gender = profile.gender
                 age = if (profile.age > 0) profile.age.toString() else ""
+                profileImageUrl = profile.profileImageUrl
             },
             onError = { error -> errorMessage = error }
         )
@@ -91,6 +118,50 @@ fun ProfileScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            item {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    // Circular Profile Image
+                    Box(contentAlignment = Alignment.BottomEnd) {
+                        if (profileImageUrl.isNotEmpty()) {
+                            AsyncImage(
+                                model = profileImageUrl,
+                                contentDescription = "Profile Picture",
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .clip(CircleShape)
+                                    .border(2.dp, Color.Gray, CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = "Default Profile",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(80.dp)
+                                )
+                            }
+                        }
+
+                        // Edit Button (Camera Icon)
+                        IconButton(
+                            onClick = { launcher.launch("image/*") },
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(MaterialTheme.colorScheme.primary, CircleShape)
+                                .border(2.dp, Color.White, CircleShape)
+                        ) {
+                            Icon(Icons.Default.Edit, contentDescription = "Edit Profile Image", tint = Color.White)
+                        }
+                    }
+                }
+            }
             item {
                 Text(
                     text = "Update your personal information",

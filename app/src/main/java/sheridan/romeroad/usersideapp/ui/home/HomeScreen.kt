@@ -65,8 +65,11 @@ fun HomeScreen(navController: NavController) {
 
     ModalNavigationDrawer(
         drawerState = drawerState,
+        scrimColor = Color.Transparent, // Prevents the scrim from appearing when the drawer is closed
         drawerContent = {
-            DrawerContent(navController, drawerState)
+            if (drawerState.isOpen) { // Render content only when drawer is open
+                DrawerContent(navController, drawerState)
+            }
         },
         content = {
             Scaffold(
@@ -88,8 +91,8 @@ fun HomeScreen(navController: NavController) {
                             }
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
-                            Color(0xFF6200EE),
-                            Color.White
+                            containerColor = Color(0xFF6200EE),
+                            titleContentColor = Color.White
                         )
                     )
                 }
@@ -178,13 +181,14 @@ fun HomeContent(navController: NavController, innerPadding: PaddingValues) {
         }
 
         // Buttons for Navigation
-        items(listOf("Patient Status", "Gemini", "Medication Reminders", "Video Feeds", "Messages")) { buttonText ->
+        items(listOf("Patient Status", "Gemini","Location", "Medication Reminders", "Video Feeds", "Messages")) { buttonText ->
             HomeScreenButton(
                 text = buttonText,
                 onClick = {
                     when (buttonText) {
                         "Patient Status" -> navController.navigate("patientStatus")
                         "Gemini" -> navController.navigate("gemini")
+                        "Location" -> navController.navigate("location")
                         "Medication Reminders" -> navController.navigate("medications")
                         "Video Feeds" -> navController.navigate("videos")
                         "Messages" -> navController.navigate("messages")

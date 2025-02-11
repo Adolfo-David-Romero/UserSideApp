@@ -11,6 +11,7 @@ data class UserProfile(
     val email: String = "",
     val phone: String = "",
     val gender: String = "",
-    val age: Int = 0
+    val age: Int = 0,
+    val profileImageUrl: String = ""
 )
 

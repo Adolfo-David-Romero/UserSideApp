@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer.dash)
     //MediaItem --> https://developer.android.com/media/media3/exoplayer/rtsp
 
+
     //Maps
     implementation(libs.play.services.maps)
     implementation(libs.android.maps.ktx)
@@ -87,6 +88,11 @@ dependencies {
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.common)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.maps.utils.ktx)
     //implementation(libs.play.services.gemini)
 
     testImplementation(libs.junit)

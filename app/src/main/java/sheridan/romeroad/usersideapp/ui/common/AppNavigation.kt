@@ -20,12 +20,16 @@ import sheridan.romeroad.usersideapp.viewmodels.GeminiViewModel
 //import sheridan.romeroad.usersideapp.ui.gemini.TextGeminiViewModel
 //import sheridan.romeroad.usersideapp.ui.gemini.UserPromptScreen
 import sheridan.romeroad.usersideapp.ui.home.HomeScreen
+import sheridan.romeroad.usersideapp.ui.map.MapScreen
 import sheridan.romeroad.usersideapp.ui.medication.MedicationRemindersScreen
+import sheridan.romeroad.usersideapp.ui.messages.MessagingScreen
 import sheridan.romeroad.usersideapp.ui.profile.ProfileScreen
 import sheridan.romeroad.usersideapp.ui.status.PatientStatusScreen
 import sheridan.romeroad.usersideapp.ui.video.VideoFeedsScreen
+import sheridan.romeroad.usersideapp.viewmodels.MapViewModel
 //import sheridan.romeroad.usersideapp.ui.video.VideoFeedsScreen
 import sheridan.romeroad.usersideapp.viewmodels.MedicationViewModel
+import sheridan.romeroad.usersideapp.viewmodels.MessagingViewModel
 import sheridan.romeroad.usersideapp.viewmodels.PatientStatusViewModel
 import sheridan.romeroad.usersideapp.viewmodels.ProfileViewModel
 
@@ -41,6 +45,7 @@ fun AppNavigation() {
     val profileViewModel: ProfileViewModel = viewModel()
     val medicationViewModel: MedicationViewModel = viewModel()
     val patientStatusViewModel: PatientStatusViewModel = viewModel()
+    val mapViewModel: MapViewModel = viewModel()
     val geminiViewModel = GeminiViewModel(
         generativeModel = GenerativeModel(
             modelName = "gemini-1.5-pro",
@@ -50,6 +55,7 @@ fun AppNavigation() {
         profileViewModel = profileViewModel,
         patientStatusViewModel = patientStatusViewModel
     )
+    val messagingViewModel: MessagingViewModel = viewModel()
     val userId = Firebase.auth.currentUser?.uid
     val context = LocalContext.current
 
@@ -72,16 +78,22 @@ fun AppNavigation() {
                 patientId = userId ?: "defaultPatientId" // Replace with actual patient ID
             )
         }
+        composable("messages") {
+            MessagingScreen(
+                messagingViewModel
+            )
+        }
 
         composable("medications") {
             MedicationRemindersScreen(
             viewModel = medicationViewModel,
             context = context
         ) }
+        composable("location") {
+            MapScreen(viewModel = mapViewModel)
+
+        }
         composable("gemini") {
-            /*UserPromptScreen(
-                geminiViewModel = geminiViewModel
-            )*/
             GeminiScreen(viewModel = geminiViewModel)
         }
 
