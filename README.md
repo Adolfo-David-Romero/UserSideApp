@@ -1,4 +1,4 @@
-🧑‍🦼 UserSideApp
+🧑‍🦼 UserSideApp (Care-receiver App)
 =================
 
 **UserSideApp** is a prototype Android app designed for individuals who are being cared for. It works together with the **Caregiver** app to create a remote health monitoring system. This app collects and sends health or device data (e.g. vitals, movements, camera input, etc.) to a caregiver's app using **Firebase Cloud**.
