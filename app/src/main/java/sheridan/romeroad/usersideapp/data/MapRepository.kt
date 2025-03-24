@@ -44,4 +44,8 @@ class MapRepository {
                 }
             }
     }
+    //Still working on the the streaming
+    //added the *functionality* of the geo fencing
+    //need to add the UI
+
 }

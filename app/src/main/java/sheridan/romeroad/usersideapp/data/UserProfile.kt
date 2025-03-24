@@ -12,6 +12,8 @@ data class UserProfile(
     val phone: String = "",
     val gender: String = "",
     val age: Int = 0,
-    val profileImageUrl: String = ""
+    val profileImageUrl: String = "",
+    //val doctorNumber: String = ""
+
 )
 

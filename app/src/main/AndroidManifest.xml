@@ -40,6 +40,11 @@
         <receiver android:name=".services.MedicationAlarmReceiver"
             android:exported="false" />
         <service android:name=".services.FallDetectionService" />
+        <receiver android:name=".viewmodels.GeofenceBroadcastReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.location.GeofenceEvent" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

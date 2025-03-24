@@ -181,13 +181,14 @@ fun HomeContent(navController: NavController, innerPadding: PaddingValues) {
         }
 
         // Buttons for Navigation
-        items(listOf("Patient Status", "Gemini","Location", "Medication Reminders", "Video Feeds", "Messages")) { buttonText ->
+        items(listOf("Patient Status", "Gemini", "Geofence", "Location", "Medication Reminders", "Video Feeds", "Messages")) { buttonText ->
             HomeScreenButton(
                 text = buttonText,
                 onClick = {
                     when (buttonText) {
                         "Patient Status" -> navController.navigate("patientStatus")
                         "Gemini" -> navController.navigate("gemini")
+                        "Geofence" -> navController.navigate("geofence")
                         "Location" -> navController.navigate("location")
                         "Medication Reminders" -> navController.navigate("medications")
                         "Video Feeds" -> navController.navigate("videos")

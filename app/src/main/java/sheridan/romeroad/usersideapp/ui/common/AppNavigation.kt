@@ -16,6 +16,7 @@ import sheridan.romeroad.usersideapp.ui.auth.LoginScreen
 import sheridan.romeroad.usersideapp.ui.auth.RegisterScreen
 //import sheridan.romeroad.usersideapp.ui.gemini.GeminiPromptScreen
 import sheridan.romeroad.usersideapp.ui.gemini.GeminiScreen
+import sheridan.romeroad.usersideapp.ui.geofence.GeofenceScreen
 import sheridan.romeroad.usersideapp.viewmodels.GeminiViewModel
 //import sheridan.romeroad.usersideapp.ui.gemini.TextGeminiViewModel
 //import sheridan.romeroad.usersideapp.ui.gemini.UserPromptScreen
@@ -26,6 +27,7 @@ import sheridan.romeroad.usersideapp.ui.messages.MessagingScreen
 import sheridan.romeroad.usersideapp.ui.profile.ProfileScreen
 import sheridan.romeroad.usersideapp.ui.status.PatientStatusScreen
 import sheridan.romeroad.usersideapp.ui.video.VideoFeedsScreen
+import sheridan.romeroad.usersideapp.viewmodels.GeofenceViewModel
 import sheridan.romeroad.usersideapp.viewmodels.MapViewModel
 //import sheridan.romeroad.usersideapp.ui.video.VideoFeedsScreen
 import sheridan.romeroad.usersideapp.viewmodels.MedicationViewModel
@@ -45,6 +47,7 @@ fun AppNavigation() {
     val profileViewModel: ProfileViewModel = viewModel()
     val medicationViewModel: MedicationViewModel = viewModel()
     val patientStatusViewModel: PatientStatusViewModel = viewModel()
+    val geofenceViewModel: GeofenceViewModel = viewModel()
     val mapViewModel: MapViewModel = viewModel()
     val geminiViewModel = GeminiViewModel(
         generativeModel = GenerativeModel(
@@ -96,6 +99,9 @@ fun AppNavigation() {
         composable("gemini") {
             GeminiScreen(viewModel = geminiViewModel)
         }
+        composable("geofence") {
+            GeofenceScreen(viewModel = geofenceViewModel)
+        }
 
         composable("videos") {
             VideoFeedsScreen() }
@@ -119,3 +125,9 @@ fun AppNavigation() {
         // Add other routes as needed
     }
 }
+
+//Two way streaming
+//all the map features (heatmap, geofence, map based notifications)
+//Finishing presentation
+//Broshure update
+//1-3pm

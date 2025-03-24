@@ -93,6 +93,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.maps.utils.ktx)
+    implementation(libs.play.services.location)
+    //implementation(libs.google.webrtc)
     //implementation(libs.play.services.gemini)
 
     testImplementation(libs.junit)
